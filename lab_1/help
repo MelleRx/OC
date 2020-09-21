@@ -1,0 +1,16 @@
+
+#!/bin/bash
+
+help () {
+ bold=$(tput bold)
+ normal=$(tput sgr0)
+ echo "***********************************************************************************************"
+ echo "${bold}calc${normal} - base math functions(sum/sub/mul/div)"
+ echo "${bold}search${normal} - searching string in file"
+ echo "${bold}reverse${normal} - reverse text in file1 and save it in file2"
+ echo "${bold}strlen${normal} - enter string and find out its length"
+ echo "${bold}log${normal} - output X.log with colored marks Information and Warning"
+ echo "${bold}exit${normal} - exit of script"
+ echo "***********************************************************************************************" 
+
+}

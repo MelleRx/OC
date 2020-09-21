@@ -1,0 +1,10 @@
+#!/bin/bash
+
+strlen () {
+ read str
+ if [[ -z "$1" ]]; then
+   echo "Empty string!" >&2
+   exit -4
+ fi
+ expr length "$str"
+}

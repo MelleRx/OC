@@ -1,0 +1,56 @@
+#!/bin/bash
+
+source calc
+source search
+source reverse
+source strlen
+source log
+source help
+source exit_
+
+interactive() {
+  while true; do
+    select command in calc search reverse strlen log help exit; do
+      case $command in
+        calc)
+          read -p "Enter fuction (sum/sub/mul/div): " func
+          read -p "Enter first number: " n1
+          read -p "Enter second number: " n2
+          echo "Result: $(calc "$func" "$n1" "$n2")"
+          break
+          ;;
+        search)
+          read -p "Enter dirname: " n1
+          read -p "Enter string to find: " n2
+          search "$n1" "$n2"
+          break
+          ;;
+        reverse)
+          read -p "Enter filename to reverse: " n1
+          read -p "Enter filename to save reversefile: " n2
+          reverse "$n1" "$n2"
+          break
+          ;;
+        strlen)
+          echo "Enter string: "
+          echo "Lenght of string: $(strlen "$n1")"
+          break
+          ;;
+        log)
+          log
+          break
+          ;;
+        help)
+          help
+          break
+          ;;
+        exit)
+          read -p "Enter codeBack: " n1
+          exit_ "$n1"
+          ;;
+      esac
+    done
+  done
+}
+
+

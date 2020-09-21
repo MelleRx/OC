@@ -1,0 +1,16 @@
+#!/bin/bash
+
+reverse () {
+cd examples/
+if [[ -f $1 ]] && [[ -f $2 ]]; then
+  if [[ -r $1 ]] && [[ -w $2 ]]; then
+    tac $1 > $2
+  else 
+    echo "Can't read file or can't write in file" >&2
+    exit -9
+  fi
+else
+  echo "One or two files doesn't exist!" >&2
+  exit -8
+fi
+}

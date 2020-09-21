@@ -1,0 +1,15 @@
+#!/bin/bash
+
+log () {
+file=/var/log/anaconda/X.log
+if [[ -f $file ]]; then
+  sed -n 's/] (WW)/] Warning/p' $file > text.txt
+  sed -n 's/] (II)/] Information/p' $file >> text.txt
+  GREP_COLOR="1;33" grep --color="always" "Warning" text.txt
+  GREP_COLOR="1;34" grep --color="always" "Information" text.txt
+  rm text.txt
+else
+  echo "File <"$file"> doesn't exist!" >&2
+  exit -5
+fi
+}

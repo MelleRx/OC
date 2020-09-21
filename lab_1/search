@@ -1,0 +1,12 @@
+#!/bin/bash
+
+search () {
+  dir=$1
+  str=$2
+  if [[ -d $dir ]]; then
+    grep -r $str $dir
+  else
+    echo "Directory doesn't exist!" >&2
+    exit -6
+  fi
+}
