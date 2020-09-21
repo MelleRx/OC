@@ -32,7 +32,7 @@ interactive() {
           break
           ;;
         strlen)
-          echo "Enter string: "
+          read -p "Enter string: " n1
           echo "Lenght of string: $(strlen "$n1")"
           break
           ;;
