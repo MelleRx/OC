@@ -4,8 +4,13 @@ reverse () {
 cd examples/
 if [[ -f $1 ]] && [[ -f $2 ]]; then
   if [[ -r $1 ]] && [[ -w $2 ]]; then
-    tac $1 > $2
-  else 
+    echo "Enter 1 to write in file or Enter 2 to append in file"
+    read tmp
+    case $tmp in
+      1) tac $1 > $2;;
+      2) tac $1 >> $2;;
+    esac
+  else
     echo "Can't read file or can't write in file" >&2
     exit -9
   fi
