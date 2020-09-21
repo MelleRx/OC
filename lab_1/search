@@ -7,6 +7,6 @@ search () {
     grep -r $str $dir
   else
     echo "Directory doesn't exist!" >&2
-    exit -6
+    return -6
   fi
 }

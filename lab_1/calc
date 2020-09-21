@@ -4,20 +4,23 @@ calc() {
   arg_1=$2
   arg_2=$3
   if ! [[ $arg_1 =~ ^-?[0-9]+$ ]] || ! [[ $arg_2 =~ ^-?[0-9]+$ ]]; then 
-    echo "One of arguments not a number!" >&2; exit -2
+    echo "One of arguments not a number!" >&2; return -2
   fi
   case $func in 
-    sum) echo "$((arg_1 + arg_2))";;
-    sub) echo "$((arg_1 - arg_2))";;
-    mul) echo "$((arg_1 * arg_2))";;
-    div) 
-      if [[ $arg_2 -eq 0 ]]; then echo "You can't divide by zero!" >&2; exit -3 
-      else echo "$((arg_1 / arg_2))"
+    sum) echo "Result: $((arg_1 + arg_2))";;
+    sub) echo "Result: $((arg_1 - arg_2))";;
+    mul) echo "Result: $((arg_1 * arg_2))";;
+    div)
+      if [[ $arg_2 -eq 0 ]]; then
+        echo "You can't divide by zero!" >&2
+        return -3
+      else
+        echo "Result: $((arg_1 / arg_2))"
       fi
       ;;
     *)
       echo "Invalid parametr!" >&2
-      exit -1
+      return -1
       ;;
   esac
 }

@@ -16,7 +16,7 @@ interactive() {
           read -p "Enter fuction (sum/sub/mul/div): " func
           read -p "Enter first number: " n1
           read -p "Enter second number: " n2
-          echo "Result: $(calc "$func" "$n1" "$n2")"
+          calc "$func" "$n1" "$n2"
           break
           ;;
         search)
@@ -33,7 +33,7 @@ interactive() {
           ;;
         strlen)
           read -p "Enter string: " n1
-          echo "Lenght of string: $(strlen "$n1")"
+          strlen "$n1"
           break
           ;;
         log)

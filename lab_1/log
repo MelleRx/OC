@@ -10,6 +10,6 @@ if [[ -f $file ]]; then
   rm text.txt
 else
   echo "File <"$file"> doesn't exist!" >&2
-  exit -5
+  return -5
 fi
 }

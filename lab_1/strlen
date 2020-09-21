@@ -3,7 +3,7 @@
 strlen () {
  if [[ -z "$1" ]]; then
    echo "Empty string!" >&2
-   exit -4
+   return -4
  fi
- expr length "$1"
+ echo "Length of string: ($expr length "$1")"
 }
