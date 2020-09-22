@@ -16,6 +16,6 @@ case $1 in
   exit) exit_ "${@:2}";;
   help) help;;
   interactive) interactive;;
-  *) echo "Invalid key!";;
+  *) echo "Invalid key!" >&2; return -1;;
 esac
 
