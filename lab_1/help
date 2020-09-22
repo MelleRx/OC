@@ -5,12 +5,25 @@ help () {
  bold=$(tput bold)
  normal=$(tput sgr0)
  echo "***********************************************************************************************"
+ echo "${bold}COMMANDS:${normal}"
  echo "${bold}calc${normal} - base math functions(sum/sub/mul/div)"
  echo "${bold}search${normal} - searching string in file"
  echo "${bold}reverse${normal} - reverse text in file1 and save it in file2"
  echo "${bold}strlen${normal} - enter string and find out its length"
  echo "${bold}log${normal} - output X.log with colored marks Information and Warning"
  echo "${bold}exit${normal} - exit of script"
+ echo "${bold}Exit codes:{normal}"
+ echo "${bold}-1${normal} - Invalid parametr"
+ echo "${bold}-2${normal} - One or more arguments not a number"
+ echo "${bold}-3${normal} - You can't divide by zero"
+ echo "${bold}-4${normal} - Empty string"
+ echo "${bold}-5${normal} - File doesn't exist"
+ echo "${bold}-6${normal} - Directory doesn't exist"
+ echo "${bold}-7${normal} - Argument not a number"
+ echo "${bold}-8${normal} - File doesn't exist"
+ echo "${bold}-9${normal} - Can't read file"
+ echo "${bold}-10${normal} - Too many/Not enough argements"
+ echo "${bold}-11${normal} - Can't write in file"
  echo "***********************************************************************************************" 
 
 }

@@ -3,8 +3,14 @@
 search () {
   dir=$1
   str=$2
-  if [[ -d $dir ]]; then
-    grep -r $str $dir
+  if [[ $# -ne 2 ]]; then echo "Too many/Not enough arguments!" >&2; return -10; fi
+  if [[ -d "$dir" ]]; then
+    if [[ -r "$str" ]]; then
+      grep -r $str $dir 2>/dev/null
+    else
+      echo "Can't read file!" >&2
+      return -9
+    fi
   else
     echo "Directory doesn't exist!" >&2
     return -6
