@@ -1,21 +1,22 @@
 #!/bin/bash
 
 reverse () {
-cd examples/
-if [[ -f $1 ]] && [[ -f $2 ]]; then
-  if [[ -r $1 ]] && [[ -w $2 ]]; then
-    echo "Enter 1 to write in file or Enter 2 to append in file"
-    read tmp
-    case $tmp in
-      1) tac $1 > $2;;
-      2) tac $1 >> $2;;
-    esac
-  else
-    echo "Can't read file or can't write in file" >&2
-    return -9
-  fi
-else
-  echo "One or two files doesn't exist!" >&2
-  return -8
+
+if [[ $# -ne 2 ]]; then echo "More/less arguments"; return -10; fi
+if ! [[ -f "$1" ]]; then echo "File doest't exist"; return -8; fi
+if ! [[ -f "$1" ]]; then echo "Can't read file"; return -9; fi
+if [[ -f "$2" ]]; then
+  if ! [[ -w "$2" ]]; then echo "Can't write in file"; return -11; fi
 fi
+true > "$2"
+echo "Enter W to write in file or Enter A to append in file"
+read tmp
+case $tmp in
+  W) tac $1 > $2;;
+  A) tac $1 >> $2;;
+  *) echo "Invalid parametr"
+     return -1
+     ;;
+esac
+
 }
