@@ -3,10 +3,11 @@ calc() {
   func=$1
   arg_1=$2
   arg_2=$3
+  if [[ $# -ne 3 ]]; then echo "Too many/Not enough arguments!" >&2; return -10; fi
   if ! [[ $arg_1 =~ ^-?[0-9]+$ ]] || ! [[ $arg_2 =~ ^-?[0-9]+$ ]]; then 
-    echo "One of arguments not a number!" >&2; return -2
+    echo "One or more arguments not a number!" >&2; return -2
   fi
-  case $func in 
+  case $func in
     sum) echo "Result: $((arg_1 + arg_2))";;
     sub) echo "Result: $((arg_1 - arg_2))";;
     mul) echo "Result: $((arg_1 * arg_2))";;
