@@ -2,9 +2,9 @@
 
 strlen () {
  if [[ $# -lt 1 ]]; then echo "Empty string!" >&2; return -4; fi
- if [[ "$1"="" ]]; then
+ if [[ "$1" = "" ]]; then
    echo "Length of string: 0"
    return 0
  fi
- echo "Length of string: ($expr length "$1")"
+ echo "Length of string: $(expr length "$1")"
 }

@@ -12,7 +12,8 @@ help () {
  echo "${bold}strlen${normal} - enter string and find out its length"
  echo "${bold}log${normal} - output X.log with colored marks Information and Warning"
  echo "${bold}exit${normal} - exit of script"
- echo "${bold}Exit codes:${normal}"
+ echo
+ echo "${bold}EXIT CODES:${normal}"
  echo "${bold}-1${normal} - Invalid parametr"
  echo "${bold}-2${normal} - One or more arguments not a number"
  echo "${bold}-3${normal} - You can't divide by zero"
