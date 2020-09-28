@@ -8,12 +8,15 @@ if ! [[ -r "$1" ]]; then echo "Can't read file!" >&2; return -9; fi
 if [[ -f "$2" ]]; then
   if ! [[ -w "$2" ]]; then echo "Can't write in file!" >&2; return -11; fi
 fi
-true > "$2"
 echo "Enter W to write in file or Enter A to append in file"
 read tmp
-case $tmp in
-  W) tac $1 > $2;;
-  A) tac $1 >> $2;;
+case $tmp in 
+  W | w) 
+    t=$(mktemp)
+    tac "$1" | rev > $t && cat $t > $2
+    rm $t 
+    ;;
+  A | a) tac $1 >> $2;;
   *) echo "Invalid parametr!" >&2; return -1;;
 esac
 
