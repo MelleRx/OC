@@ -23,7 +23,7 @@ help () {
  echo "${bold}-7${normal} - Argument not a number"
  echo "${bold}-8${normal} - File doesn't exist"
  echo "${bold}-9${normal} - Can't read file"
- echo "${bold}-10${normal} - Too many/Not enough argements"
+ echo "${bold}-10${normal} - Too many/Not enough arguments"
  echo "${bold}-11${normal} - Can't write in file"
  echo "***********************************************************************************************" 
 

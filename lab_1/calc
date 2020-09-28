@@ -20,7 +20,7 @@ calc() {
       fi
       ;;
     *)
-      echo "Invalid parametr!" >&2
+      echo "Invalid parameter!" >&2
       return -1
       ;;
   esac
