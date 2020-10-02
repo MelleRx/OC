@@ -10,7 +10,7 @@ if [[ -f "$2" ]]; then
 else
   dir=$(dirname "$2")
   if ! [[ -d "$dir" ]]; then echo "Directory doesn't exist!" >&2; return -8; fi
-  if ! [[ -w "$dir" ]]; then echo "Can't read directory!" >&2; return -9; fi
+  if ! [[ -w "$dir" ]]; then echo "Can't write in directory!" >&2; return -9; fi
 fi
 echo "Enter W to write in file or Enter A to append in file"
 read tmp
