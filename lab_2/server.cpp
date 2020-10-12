@@ -39,7 +39,6 @@ int main() {
     while (true) {
         int new_fd;
         char tmp[1024];
-        addr_size = sizeof their_addr;
         if((new_fd = accept(fd, NULL, NULL)) < 0) {
             std::cerr << "Could not accept: " << strerror(errno) << std::endl;
             return -1;
