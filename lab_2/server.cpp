@@ -11,6 +11,14 @@
 #include <cstdlib>
 #include <cerrno>
 #include <cstring>
+#include <vector>
+#include <string>
+#include <iostream>
+#include <sstream>
+
+std::vector<std::string> g_quotes = {
+        "Oleg molodec!"
+};
 
 int main() {
     addrinfo serverCfg, *ai_res;
@@ -26,7 +34,7 @@ int main() {
     int s;
     s = socket(ai_res->ai_family, ai_res->ai_socktype, ai_res->ai_protocol);
     bind(s, ai_res->ai_addr, ai_res->ai_addrlen);
-    backlog = 10;
+    int backlog = 10;
     listen(s, backlog);
     while (true) {
         int new_fd;
@@ -42,8 +50,8 @@ int main() {
         buf << "Connection: close\r\n\r\n";
         buf << quote;
 
-        send(newfd, buf.str().c_str(), buf.str().size() , 0);
-        close(newfd);
+        send(new_fd, buf.str().c_str(), buf.str().size() , 0);
+        close(new_fd);
     }
 
 }
