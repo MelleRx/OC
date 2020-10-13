@@ -60,21 +60,6 @@ int main() {
             char addr[INET6_ADDRSTRLEN];
             memset(addr, 0, sizeof(addr));
 
-            switch(ai->ai_addr->sa_family) {
-                case AF_INET6: {
-                    sockaddr_in6 * sin6 = ((sockaddr_in6 *) ai->ai_addr);
-                    inet_ntop(sin6->sin6_family, &sin6->sin6_addr, addr, sizeof(addr));
-                    oss << "[" << addr << "]:" << ntohs(sin6->sin6_port);
-                    break;
-                }
-                case AF_INET: {
-                    sockaddr_in * sin = ((sockaddr_in *) ai->ai_addr);
-                    inet_ntop(sin->sin_family, &sin->sin_addr, addr, sizeof(addr));
-                    oss << addr << ":" << ntohs(sin->sin_port);
-                    break;
-                }
-            }
-
             std::cout << "Listening on " << oss.str() << std::endl;
             break;
         }
