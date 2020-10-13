@@ -1,48 +1,106 @@
-//
-// Created by kukul on 12.10.2020.
-//
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/select.h>
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+
 #include <ctime>
 #include <cstdlib>
 #include <cerrno>
 #include <cstring>
+
 #include <vector>
 #include <string>
 #include <iostream>
 #include <sstream>
 
 std::vector<std::string> g_quotes = {
-        "Oleg molodec!"
+        "Oleg molodec"
 };
 
 int main() {
-    addrinfo serverCfg, *ai_res;
-    memset(&serverCfg, 0, sizeof serverCfg);
-    serverCfg.ai_socktype = SOCK_STREAM;
-    serverCfg.ai_family = AF_UNSPEC;
-    serverCfg.ai_flags = AI_PASSIVE;
-    int fd = getaddrinfo("localhost", "80", &serverCfg, &ai_res);
-    if (fd < 0) {
+    addrinfo hints, * ai_res;
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_flags = AI_PASSIVE;
+    int fd = getaddrinfo("localhost", "80", &hints, &ai_res);
+    if(fd < 0) {
         std::cerr << gai_strerror(fd) << std::endl;
         return -1;
     }
-    int s;
-    s = socket(ai_res->ai_family, ai_res->ai_socktype, ai_res->ai_protocol);
-    bind(s, ai_res->ai_addr, ai_res->ai_addrlen);
-    int backlog = 10;
-    listen(s, backlog);
-    while (true) {
-        int new_fd;
-        char tmp[1024];
-        if((new_fd = accept(fd, NULL, NULL)) < 0) {
+
+    std::string errfn;
+
+    for(addrinfo * ai = ai_res; ai != NULL; ai = ai->ai_next) {
+        if((fd = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol)) < 0) {
+            errfn = "socket";
+            continue;
+        }
+
+        int yes = 1;
+        if(setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) != 0) {
+            errfn = "setsockopt";
+            continue;
+        }
+
+        if(bind(fd, ai->ai_addr, ai->ai_addrlen) != 0) {
+            errfn = "bind";
+            close(fd);
+            continue;
+        } else {
+            if(listen(fd, 10) < 0) {
+                errfn = "listen";
+                close(fd);
+                continue;
+            }
+
+            std::ostringstream oss;
+            char addr[INET6_ADDRSTRLEN];
+            memset(addr, 0, sizeof(addr));
+
+            switch(ai->ai_addr->sa_family) {
+                case AF_INET6: {
+                    sockaddr_in6 * sin6 = ((sockaddr_in6 *) ai->ai_addr);
+                    inet_ntop(sin6->sin6_family, &sin6->sin6_addr, addr, sizeof(addr));
+                    oss << "[" << addr << "]:" << ntohs(sin6->sin6_port);
+                    break;
+                }
+                case AF_INET: {
+                    sockaddr_in * sin = ((sockaddr_in *) ai->ai_addr);
+                    inet_ntop(sin->sin_family, &sin->sin_addr, addr, sizeof(addr));
+                    oss << addr << ":" << ntohs(sin->sin_port);
+                    break;
+                }
+            }
+
+            std::cout << "Listening on " << oss.str() << std::endl;
+            break;
+        }
+    }
+
+    freeaddrinfo(ai_res);
+
+    if(errfn != "") {
+        std::cerr << "Could not bind to port: " << errfn << ": " << strerror(errno)
+                  << std::endl;
+        return -1;
+    }
+
+    srand(time(NULL));
+    while(true) {
+        int ret, newfd;
+        char tmp[4];
+
+        if((newfd = accept(fd, NULL, NULL)) < 0) {
             std::cerr << "Could not accept: " << strerror(errno) << std::endl;
             return -1;
         }
+
+        while(recv(newfd, tmp, sizeof(tmp), MSG_DONTWAIT) == -1 &&
+              (errno == EAGAIN || errno == EWOULDBLOCK)) {}
+
         std::string quote = g_quotes[rand() % g_quotes.size()];
         std::stringstream buf;
         buf << "HTTP/1.1 200 OK\r\n";
@@ -52,9 +110,10 @@ int main() {
         buf << "Connection: close\r\n\r\n";
         buf << quote;
 
-        send(new_fd, buf.str().c_str(), buf.str().size() , 0);
-        close(new_fd);
+        send(newfd, buf.str().c_str(), buf.str().size() , 0);
+        close(newfd);
     }
 
+    return 0;
 }
 
