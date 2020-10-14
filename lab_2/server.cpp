@@ -1,104 +1,52 @@
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <sys/select.h>
-#include <netdb.h>
-#include <arpa/inet.h>
-#include <unistd.h>
-
-#include <ctime>
-#include <cstdlib>
-#include <cerrno>
-#include <cstring>
-
-#include <vector>
-#include <string>
-#include <iostream>
-#include <sstream>
-
-std::vector<std::string> g_quotes = {
-        "Oleg molodec"
-};
+#include <netinet/in.h>
 
 int main() {
-    addrinfo hints, * ai_res;
-    memset(&hints, 0, sizeof(hints));
-    hints.ai_socktype = SOCK_STREAM;
-    hints.ai_family = AF_UNSPEC;
-    hints.ai_flags = AI_PASSIVE;
-    int fd = getaddrinfo("localhost", "80", &hints, &ai_res);
-    if(fd < 0) {
-        std::cerr << gai_strerror(fd) << std::endl;
-        return -1;
+    int sock, listener;
+    struct sockaddr_in addr; // address family, port number, IP, "addition" to the size of the sockaddr structure
+    char buf[1024];
+    int bytes_read;
+
+    listener = socket(AF_INET, SOCK_STREAM, 0); // create socket(internet domain(IPv4), pre-installation of the connection, protocol)
+
+    // checking for the existence of a socket
+    if (listener < 0) {
+        perror("socket");
+        exit(1);
     }
 
-    std::string errfn;
+    addr.sin_family = AF_INET; // internet domain(IPv4)
+    addr.sin_port = htons(3425); // Host TO Network Short
+    addr.sin_addr.s_addr = htonl(INADDR_ANY); // Host TO Network Long(any interface)
 
-    for(addrinfo * ai = ai_res; ai != NULL; ai = ai->ai_next) {
-        if((fd = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol)) < 0) {
-            errfn = "socket";
-            continue;
-        }
-
-        int yes = 1;
-        if(setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) != 0) {
-            errfn = "setsockopt";
-            continue;
-        }
-
-        if(bind(fd, ai->ai_addr, ai->ai_addrlen) != 0) {
-            errfn = "bind";
-            close(fd);
-            continue;
-        } else {
-            if(listen(fd, 10) < 0) {
-                errfn = "listen";
-                close(fd);
-                continue;
-            }
-
-            std::ostringstream oss;
-            char addr[INET6_ADDRSTRLEN];
-            memset(addr, 0, sizeof(addr));
-
-            std::cout << "Listening on " << oss.str() << std::endl;
-            break;
-        }
+    // naming a socket(socket , pointer to a structure with address, len of structure)
+    if (bind(listener, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
+        perror("bind");
+        exit(2);
     }
 
-    freeaddrinfo(ai_res);
+    listen(listener, 10); // create a queue of connection requests(socket, len of queue)
 
-    if(errfn != "") {
-        std::cerr << "Could not bind to port: " << errfn << ": " << strerror(errno)
-                  << std::endl;
-        return -1;
-    }
-
-    srand(time(NULL));
-    while(true) {
-        int ret, newfd;
-        char tmp[4];
-
-        if((newfd = accept(fd, NULL, NULL)) < 0) {
-            std::cerr << "Could not accept: " << strerror(errno) << std::endl;
-            return -1;
+    // server is ready to accept a request
+    while (true) {
+        // creates a new socket to communicate with client and returns descriptor
+        // (listening socket, structure pointer, len of structure pointer)
+        // NULL - not fill
+        sock = accept(listener, NULL, NULL);
+        if (sock < 0) {
+            perror("accept");
+            exit(3);
         }
 
-        while(recv(newfd, tmp, sizeof(tmp), MSG_DONTWAIT) == -1 &&
-              (errno == EAGAIN || errno == EWOULDBLOCK)) {}
-
-        std::string quote = g_quotes[rand() % g_quotes.size()];
-        std::stringstream buf;
-        buf << "HTTP/1.1 200 OK\r\n";
-        buf << "Server: space-quotes/0.0.1\r\n";
-        buf << "Content-Type: text/plain; charset=utf-8\r\n";
-        buf << "Content-Length: " << quote.size() << "\r\n";
-        buf << "Connection: close\r\n\r\n";
-        buf << quote;
-
-        send(newfd, buf.str().c_str(), buf.str().size() , 0);
-        close(newfd);
+        while (true) {
+            // reading data from socket(socket, buf pointer, len of buf, combination of bit flags)
+            bytes_read = recv(sock, buf, 1024, 0); // if flags = 0 -> delete data from the socket
+            if (bytes_read <= 0) break;
+            send(sock, buf, bytes_read, 0); // sending data(socket, buf pointer, len of buf, combination of bit flags)
+        }
+        close(sock); // closing a socket
     }
-
     return 0;
 }
 
