@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <cstdio>
 #include <netinet/in.h>
+#include <cstdlib>
 
 int main() {
     int sock, listener;
