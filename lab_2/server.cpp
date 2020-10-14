@@ -5,6 +5,7 @@
 #include <sys/un.h>
 #include <netinet/in.h>
 #include <cstdlib>
+#include <stdio.h>
 
 int main() {
     int sock, listener;
