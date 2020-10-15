@@ -34,7 +34,7 @@ int main() {
         exit(2);
     }
 
-    listen(listener, 10); // create a queue of connection requests(socket, len of queue)
+    listen(listener, 1); // create a queue of connection requests(socket, len of queue)
 
     // server is ready to accept a request
     while (true) {
