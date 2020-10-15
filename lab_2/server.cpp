@@ -29,7 +29,7 @@ int main() {
         exit(1);
     }
 
-    fcntl(listener, F_SETFL, O_NONBLOCK);
+    fcntl(listener, F_SETFL, O_NONBLOCK); // additional operations on the fd file descriptor(socket, file status flag(F_SETFL), ...)
 
     addr.sin_family = AF_INET; // internet domain(IPv4)
     addr.sin_port = htons(3425); // Host TO Network Short
@@ -47,15 +47,15 @@ int main() {
         exit(3);
     }
 
-    std::set<int> clients;
+    std::set<int> clients; // set of clients
     clients.clear();
 
     // server is ready to accept a request
     while (true) {
         // fill set of sockets
         fd_set readset;
-        FD_ZERO(&readset);
-        FD_SET(listener, &readset);
+        FD_ZERO(&readset); // clear set
+        FD_SET(listener, &readset); // add descriptor fd in set
 
         for (std::set<int>::iterator it = clients.begin(); it != clients.end(); it++)
             FD_SET(*it, &readset);
@@ -73,6 +73,7 @@ int main() {
         }
 
         // defining event type and performing the appropriate actions
+        // FD_ISSET - check fd in set
         if (FD_ISSET(listener, &readset)) {
             // creates a new socket to communicate with client and returns descriptor
             // (listening socket, structure pointer, len of structure pointer)
