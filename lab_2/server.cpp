@@ -44,7 +44,7 @@ int main() {
     // create a queue of connection requests(socket, len of queue)
     if (listen(listener, 2) < 0) {
         perror("listen");
-        exit(3);
+        exit(4);
     }
 
     std::set<int> clients; // set of clients
@@ -81,7 +81,7 @@ int main() {
             int sock = accept(listener, NULL, NULL);
             if (sock < 0) {
                 perror("accept");
-                exit(4);
+                exit(3);
             }
             fcntl(sock, F_SETFL, O_NONBLOCK);
             clients.insert(sock);
