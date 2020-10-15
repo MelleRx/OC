@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <iostream>
+#include <cstring>
 
 int main() {
     int sock, listener;
