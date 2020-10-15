@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <unistd.h>
 #include <stdio.h>
+#include <iostream>
 
 int main() {
     int sock, listener;
@@ -49,7 +50,7 @@ int main() {
             // reading data from socket(socket, buf pointer, len of buf, combination of bit flags)
             bytes_read = recv(sock, buf, 1024, 0); // if flags = 0 -> delete data from the socket
             if (bytes_read <= 0) break;
-            printf("Oleg molodec");
+            std::cout << "Oleg molodec";
             send(sock, buf, bytes_read, 0); // sending data(socket, buf pointer, len of buf, combination of bit flags)
         }
         close(sock); // closing a socket
