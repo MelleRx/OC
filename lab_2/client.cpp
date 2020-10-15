@@ -3,6 +3,9 @@
 #include <netinet/in.h>
 #include <iostream>
 
+char message[] = "Hello there!\n";
+char buf[sizeof(message)];
+
 int main() {
     int sock;
     struct sockaddr_in addr;
