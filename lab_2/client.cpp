@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
 
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port);
-    addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);;
+    addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
 
     if (connect(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
         perror("connect");
