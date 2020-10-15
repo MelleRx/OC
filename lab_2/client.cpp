@@ -3,13 +3,11 @@
 #include <netinet/in.h>
 #include <iostream>
 
-char message[] = "Hello there!\n";
-char buf[sizeof(message)];
-
-
 int main() {
     int sock;
     struct sockaddr_in addr;
+    struct hostent* hostinfo;
+    port = atoi(3425)
 
     sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0) {
@@ -18,8 +16,8 @@ int main() {
     }
 
     addr.sin_family = AF_INET;
-    addr.sin_port = htons(3425);
-    addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+    addr.sin_port = htons(port);
+    addr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
     if (connect(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
         perror("connect");
