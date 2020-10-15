@@ -3,6 +3,9 @@
 #include <netinet/in.h>
 #include <iostream>
 #include <unistd.h>
+#include <cstring>
+#include <stdio.h>
+#include <stdlib.h>
 
 int main(int argc, char **argv) {
     int sock;
@@ -10,7 +13,7 @@ int main(int argc, char **argv) {
     char buf[sizeof(message)];
     struct sockaddr_in addr;
     struct hostent* hostinfo;
-    port = atoi(argv[1]);
+    int port = atoi(argv[1]);
     hostinfo = argv[2];
     sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0) {
@@ -20,7 +23,7 @@ int main(int argc, char **argv) {
 
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port);
-    addr.sin_addr.s_addr = inet_addr(hostinfo);
+    addr.sin_addr.s_addr = in6_addr(hostinfo);
 
     if (connect(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
         perror("connect");
