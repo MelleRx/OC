@@ -8,14 +8,13 @@
 #include <stdlib.h>
 #include <netdb.h>
 
-int main(int argc, char **argv) {
+int main() {
     int sock;
     char message[1024];
     char buf[sizeof(message)];
     struct sockaddr_in addr;
     struct hostent* hostinfo;
-    int port = atoi(argv[1]);
-    hostinfo = argv[2];
+    int port = atoi(3425);
     sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0) {
         perror("socket");
