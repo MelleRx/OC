@@ -26,8 +26,8 @@ int main() {
     }
 
     addr.sin_family = AF_INET; // internet domain(IPv4)
-    addr.sin_port = htons(80); // Host TO Network Short
-    addr.sin_addr.s_addr = htonl(INADDR_ANY); // Host TO Network Long(any interface)
+    addr.sin_port = htons(3425); // Host TO Network Short
+    addr.sin_addr.s_addr = INADDR_ANY; // Host TO Network Long(any interface)
 
     // naming a socket(socket , pointer to a structure with address, len of structure)
     if (bind(listener, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
@@ -36,7 +36,7 @@ int main() {
     }
 
     // create a queue of connection requests(socket, len of queue)
-    if (listen(listener, 3) < 0) {
+    if (listen(listener, 1) < 0) {
         perror("listen");
         exit(3);
     }
@@ -51,14 +51,27 @@ int main() {
             perror("accept");
             exit(4);
         }
-        while (true) {
-            // reading data from socket(socket, buf pointer, len of buf, combination of bit flags)
-            bytes_read = recv(sock, buf, 1024, 0); // if flags = 0 -> delete data from the socket
-            if (bytes_read <= 0) break;
-            send(sock, buf, bytes_read, 0); // sending data(socket, buf pointer, len of buf, combination of bit flags)
+        switch (fork()) {
+            case -1:
+                perror("fork");
+                break;
+
+            case 0:
+                close(listener);
+                while (true) {
+                    // reading data from socket(socket, buf pointer, len of buf, combination of bit flags)
+                    bytes_read = recv(sock, buf, 1024, 0); // if flags = 0 -> delete data from the socket
+                    if (bytes_read <= 0) break;
+                    send(sock, buf, bytes_read,
+                         0); // sending data(socket, buf pointer, len of buf, combination of bit flags)
+                }
+                close(sock); // closing a socket
+                _exit(0);
+            default:
+                close(sock);
         }
-        close(sock); // closing a socket
-        }
+    }
+    close(listener);
     return 0;
 }
 
