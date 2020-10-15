@@ -14,7 +14,7 @@ int main() {
     char buf[sizeof(message)];
     struct sockaddr_in addr;
     struct hostent* hostinfo;
-    int port = atoi(3425);
+    int port = 3425;
     sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0) {
         perror("socket");
