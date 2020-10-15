@@ -59,11 +59,6 @@ public:
 };
 
 class tcpServer::Client {
-    SOCKET socket;
-    SOCKADDR_IN address;
-    char buffer[buffer_size];
-public:
-    Client(SOCKET socket, SOCKADDR_IN address);
     int socket;
     struct sockaddr_in address;
     char buffer[buffer_size];
