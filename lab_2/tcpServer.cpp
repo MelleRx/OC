@@ -33,7 +33,7 @@ void tcpServer::joinLoop() {handler_thread.join();}
 //Загружает в буфер данные от клиента и возвращает их размер
 int tcpServer::Client::loadData() {return recv(socket, buffer, buffer_size, 0);}
 //Возвращает указатель на буфер с данными от клиента
-char* tServer::Client::getData() {return buffer;}
+char* tcpServer::Client::getData() {return buffer;}
 //Отправляет данные клиенту
 bool tcpServer::Client::sendData(const char* buffer, const size_t size) const {
     if (send(socket, buffer, size, 0) < 0) return false;
