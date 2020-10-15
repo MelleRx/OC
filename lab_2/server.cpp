@@ -47,7 +47,7 @@ int main() {
         exit(3);
     }
 
-    set<int> clients;
+    std::set<int> clients;
     clients.clear();
 
     // server is ready to accept a request
@@ -57,7 +57,7 @@ int main() {
         FD_ZERO(&readset);
         FD_SET(listener, &readset);
 
-        for (set<int>::iterator it = clients.begin(); it != clients.end(); it++)
+        for (std::set<int>::iterator it = clients.begin(); it != clients.end(); it++)
             FD_SET(*it, &readset);
 
         // setting a timeout
@@ -85,7 +85,7 @@ int main() {
             fcntl(sock, F_SETFL, O_NONBLOCK);
             clients.insert(sock);
         }
-        for (set<int>::iterator it = clients.begin(); it != clients.end(); it++) {
+        for (std::set<int>::iterator it = clients.begin(); it != clients.end(); it++) {
             if (FD_ISSET(*it, &readset)) {
                 // get data from client, read them
                 bytes_read = recv(*it, buf, 1024, 0);
