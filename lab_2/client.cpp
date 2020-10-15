@@ -1,6 +1,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <iostream>
 
 char message[] = "Hello there!\n";
 char buf[sizeof(message)];
@@ -26,7 +27,7 @@ int main() {
     send(sock, message, sizeof(message), 0);
     recv(sock, buf, sizeof(message), 0);
 
-    printf(buf);
+    std::cout << buf << endl;
     close(sock);
 
     return 0;
