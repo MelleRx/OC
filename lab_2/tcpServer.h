@@ -67,8 +67,8 @@ public:
 public:
     Client(const Client& other);
     ~Client();
-    getHost() const;
-    getPort() const;
+    uint32_t getHost() const;
+    uint16_t getPort() const;
 
     int loadData();
     char* getData();
