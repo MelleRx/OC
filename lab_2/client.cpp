@@ -27,7 +27,6 @@ int main() {
     send(sock, message, sizeof(message), 0);
     recv(sock, buf, sizeof(message), 0);
 
-    printf(buf);
     close(sock);
 
     return 0;
