@@ -36,7 +36,7 @@ private:
     std::list<std::thread> client_handler_threads;
     std::list<std::thread::id> client_handling_end;
 
-
+    int serv_socket;
     void handlingLoop();
 
 public:

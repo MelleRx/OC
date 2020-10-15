@@ -46,7 +46,7 @@ tcpServer::status tcpServer::start() {
     server.sin_addr.s_addr = INADDR_ANY;
     server.sin_port = htons( port );
     server.sin_family = AF_INET;
-    int serv_socket = socket(AF_INET, SOCK_STREAM, 0);
+    serv_socket = socket(AF_INET, SOCK_STREAM, 0);
 
     if (serv_socket == -1) return _status = status::err_socket_init;
     if (bind(serv_socket,(struct sockaddr *)&server , sizeof(server)) < 0) return _status = status::err_socket_bind;
