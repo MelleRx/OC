@@ -40,8 +40,8 @@ private:
     void handlingLoop();
 
 public:
-    TcpServer(const uint16_t port, handler_function_t handler);
-    ~TcpServer();
+    tcpServer(const uint16_t port, handler_function_t handler);
+    ~tcpServer();
 
     //! Set client handler
     void setHandler(handler_function_t handler);
