@@ -10,30 +10,6 @@
 #include <iostream>
 #include <cstring>
 
-void *write (void *dummyPt) {
-    for (;;) {
-        char s[1024];
-        std::cout << "<----";
-        bzero(s, 1024 + 1);
-        std::cin.getline(s, 1024);
-        send(sock, s, strlen(s), 0);
-    }
-    close(sock);
-}
-
-void *read (void *dummyPt) {
-    char test[1024];
-    bzero(test, 1024 + 1);
-    bool loop = false;
-    while(!loop) {
-        bzero(test, 1024 + 1);
-        int rc = read(sock, test, 1024);
-        if (rc > 0) {
-            string tester (test);
-            std::cout << ": "<< tester << std::endl;
-            if (tester == "exit_server") break;
-        }
-    }
 
 int main() {
     int sock, listener;
@@ -138,7 +114,33 @@ int main() {
 
         pthread_join(threadA[1], NULL);
         pthread_join(threadA[0], NULL);
-        cout << "\nClosing thread and conn" << endl;
+
+        void *write (void *dummyPt) {
+            for (;;) {
+                char s[1024];
+                std::cout << "<----";
+                bzero(s, 1024 + 1);
+                std::cin.getline(s, 1024);
+                send(sock, s, strlen(s), 0);
+            }
+            close(sock);
+        }
+
+        void *read (void *dummyPt) {
+            char test[1024];
+            bzero(test, 1024 + 1);
+            bool loop = false;
+            while(!loop) {
+                bzero(test, 1024 + 1);
+                int rc = read(sock, test, 1024);
+                if (rc > 0) {
+                    string tester (test);
+                    std::cout << ": "<< tester << std::endl;
+                    if (tester == "exit_server") break;
+                }
+            }
+
+            cout << "\nClosing thread and conn" << endl;
         close(sock);
     }
     return 0;
