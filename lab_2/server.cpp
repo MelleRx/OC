@@ -43,7 +43,7 @@ int main() {
         exit(3);
     }
 
-    puts("Waiting for connections ...")
+    puts("Waiting for connections ...");
 
     // server is ready to accept a request
     while (true) {
@@ -71,10 +71,10 @@ int main() {
 
         for (i = 0; i < max_clients; i++) {
             sd = client_socket[i];
-            if (FD_ISSET(sd , &readfds)) {
-                if ((valread = read(sd , buffer, 1024)) == 0) {
-                    getpeername(sd , (struct sockaddr*)&addr , (socklen_t*)&sizeof(addr));
-                    printf("Host disconnected , ip %s , port %d \n" , inet_ntoa(addr.sin_addr) , ntohs(addr.sin_port));
+            if (FD_ISSET(sd, &readfds)) {
+                if ((valread = read(sd, buffer, 1024)) == 0) {
+                    getpeername(sd, (struct sockaddr *) &addr, (socklen_t * ) & sizeof(addr));
+                    printf("Host disconnected , ip %s , port %d \n", inet_ntoa(addr.sin_addr), ntohs(addr.sin_port));
                     close(sd);
                     user_count--;
                     client_socket[i] = 0;
@@ -82,7 +82,7 @@ int main() {
                     buffer[valread] = '\0';
                     for (i = 0; i < max_clients; i++) {
                         sd = client_socket[i];
-                        send(sd , buffer , strlen(buffer) , 0 );
+                        send(sd, buffer, strlen(buffer), 0);
                     }
                     buffer[1024] = {0};
                 }
@@ -114,7 +114,7 @@ int main() {
         pthread_join(threadA[1], NULL);
         pthread_join(threadA[0], NULL);
 
-        void *write (void *dummyPt) {
+        void *write(void *dummyPt) {
             for (;;) {
                 char s[1024];
                 std::cout << "<----";
@@ -125,22 +125,23 @@ int main() {
             close(sock);
         }
 
-        void *read (void *dummyPt) {
+        void *read(void *dummyPt) {
             char test[1024];
             bzero(test, 1024 + 1);
             bool loop = false;
-            while(!loop) {
+            while (!loop) {
                 bzero(test, 1024 + 1);
                 int rc = read(sock, test, 1024);
                 if (rc > 0) {
-                    string tester (test);
-                    std::cout << ": "<< tester << std::endl;
+                    string tester(test);
+                    std::cout << ": " << tester << std::endl;
                     if (tester == "exit_server") break;
                 }
             }
 
             cout << "\nClosing thread and conn" << endl;
-        close(sock);
+            close(sock);
+        }
     }
     return 0;
 }
