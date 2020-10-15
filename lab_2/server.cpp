@@ -1,5 +1,6 @@
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/time.h>
 #include <cstddef>
 #include <cstdio>
 #include <sys/un.h>
@@ -9,10 +10,13 @@
 #include <stdio.h>
 #include <iostream>
 #include <cstring>
+#include <fcntl.h>
+#include <algorithm>
+#include <set>
 
 
 int main() {
-    int sock, listener;
+    int listener;
     struct sockaddr_in addr; // address family, port number, IP, "addition" to the size of the sockaddr structure
     char buf[1024];
     int bytes_read;
@@ -25,6 +29,8 @@ int main() {
         exit(1);
     }
 
+    fcntl(listener, F_SETFL, O_NONBLOCK);
+
     addr.sin_family = AF_INET; // internet domain(IPv4)
     addr.sin_port = htons(3425); // Host TO Network Short
     addr.sin_addr.s_addr = INADDR_ANY; // Host TO Network Long(any interface)
@@ -36,42 +42,64 @@ int main() {
     }
 
     // create a queue of connection requests(socket, len of queue)
-    if (listen(listener, 1) < 0) {
+    if (listen(listener, 2) < 0) {
         perror("listen");
         exit(3);
     }
 
+    set<int> clients;
+    clients.clear();
+
     // server is ready to accept a request
     while (true) {
-        // creates a new socket to communicate with client and returns descriptor
-        // (listening socket, structure pointer, len of structure pointer)
-        // NULL - not fill
-        sock = accept(listener, NULL, NULL);
-        if (sock < 0) {
-            perror("accept");
-            exit(4);
-        }
-        switch (fork()) {
-            case -1:
-                perror("fork");
-                break;
+        // fill set of sockets
+        fd_set readset;
+        FD_ZERO(&readset);
+        FD_SET(listener, &readset);
 
-            case 0:
-                close(listener);
-                while (true) {
-                    // reading data from socket(socket, buf pointer, len of buf, combination of bit flags)
-                    bytes_read = recv(sock, buf, 1024, 0); // if flags = 0 -> delete data from the socket
-                    if (bytes_read <= 0) break;
-                    send(sock, buf, bytes_read,
-                         0); // sending data(socket, buf pointer, len of buf, combination of bit flags)
+        for (set<int>::iterator it = clients.begin(); it != clients.end(); it++)
+            FD_SET(*it, &readset);
+
+        // setting a timeout
+        timeval timeout;
+        timeout.tv_sec = 15;
+        timeout.tv_usec = 0;
+
+        // waiting for an event in one of the sockets
+        int mx = max(listener, *max_element(clients.begin(), clients.end()));
+        if (select(mx+1, &readset, NULL, NULL, &timeout) <= 0) {
+            perror("select");
+            exit(3);
+        }
+
+        // defining event type and performing the appropriate actions
+        if (FD_ISSET(listener, &readset)) {
+            // creates a new socket to communicate with client and returns descriptor
+            // (listening socket, structure pointer, len of structure pointer)
+            // NULL - not fill
+            int sock = accept(listener, NULL, NULL);
+            if (sock < 0) {
+                perror("accept");
+                exit(4);
+            }
+            fcntl(sock, F_SETFL, O_NONBLOCK);
+            clients.insert(sock);
+        }
+        for (set<int>::iterator it = clients.begin(); it != clients.end(); it++) {
+            if (FD_ISSET(*it, &readset)) {
+                // get data from client, read them
+                bytes_read = recv(*it, buf, 1024, 0);
+                if (bytes_read <= 0) {
+                    // connection is broken, delete socket from set
+                    close(*it);
+                    clients.erase(*it);
+                    continue;
                 }
-                close(sock); // closing a socket
-                _exit(0);
-            default:
-                close(sock);
+                // sending data back to the client
+                send(*it, buf, bytes_read, 0);
+            }
         }
     }
-    close(listener);
     return 0;
 }
 
