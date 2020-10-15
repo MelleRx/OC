@@ -10,7 +10,7 @@ tcpServer::~tcpServer() {
 }
 
 //Задаёт callback-функцию запускаямую при подключении клиента
-void TcpServer::setHandler(tcpServer::handler_function_t handler) {this->handler = handler;}
+void tcpServer::setHandler(tcpServer::handler_function_t handler) {this->handler = handler;}
 
 //Getter/Setter порта
 uint16_t tcpServer::getPort() const {return port;}
