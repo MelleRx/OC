@@ -12,25 +12,25 @@
 
 void *write (void *dummyPt) {
     for (;;) {
-        char s[BUF_SIZE];
-        cout << "<----";
+        char s[1024];
+        std::cout << "<----";
         bzero(s, BUF_SIZE + 1);
-        cin.getline(s, BUF_SIZE);
+        std::cin.getline(s, BUF_SIZE);
         send(sock, s, strlen(s), 0);
     }
     close(sock);
 }
 
 void *read (void *dummyPt) {
-    char test[BUF_SIZE];
-    bzero(test, BUF_SIZE + 1);
+    char test[1024];
+    bzero(test, 1024 + 1);
     bool loop = false;
     while(!loop) {
         bzero(test, BUF_SIZE + 1);
-        int rc = read(sock, test, BUF_SIZE);
-        if ( rc > 0) {
+        int rc = read(sock, test, 1024);
+        if (rc > 0) {
             string tester (test);
-            cout << ": "<< tester << endl;
+            std::cout << ": "<< tester << std::endl;
             if (tester == "exit_server") break;
         }
     }
