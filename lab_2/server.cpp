@@ -66,7 +66,7 @@ int main() {
         timeout.tv_usec = 0;
 
         // waiting for an event in one of the sockets
-        int mx = max(listener, *max_element(clients.begin(), clients.end()));
+        int mx = std::max(listener, *max_element(clients.begin(), clients.end()));
         if (select(mx+1, &readset, NULL, NULL, &timeout) <= 0) {
             perror("select");
             exit(3);
