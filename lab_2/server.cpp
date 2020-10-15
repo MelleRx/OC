@@ -43,7 +43,6 @@ int main() {
         exit(3);
     }
 
-    addrlen = sizeof(addr);
     puts("Waiting for connections ...")
 
     // server is ready to accept a request
@@ -72,10 +71,10 @@ int main() {
 
         for (i = 0; i < max_clients; i++) {
             sd = client_socket[i];
-            if (FD_ISSET( sd , &readfds)) {
-                if ((valread = read( sd , buffer, 1024)) == 0) {
-                    getpeername(sd , (struct sockaddr*)&address , (socklen_t*)&addrlen);
-                    printf("Host disconnected , ip %s , port %d \n" , inet_ntoa(address.sin_addr) , ntohs(address.sin_port));
+            if (FD_ISSET(sd , &readfds)) {
+                if ((valread = read(sd , buffer, 1024)) == 0) {
+                    getpeername(sd , (struct sockaddr*)&addr , (socklen_t*)&sizeof(addr));
+                    printf("Host disconnected , ip %s , port %d \n" , inet_ntoa(addr.sin_addr) , ntohs(addr.sin_port));
                     close(sd);
                     user_count--;
                     client_socket[i] = 0;
