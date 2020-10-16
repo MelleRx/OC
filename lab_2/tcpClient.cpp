@@ -1,5 +1,4 @@
 #include "tcpClient.h"
-#include <ws2tcpip.h>
 #include <stdio.h>
 
 tcpClient::tcpClient() noexcept : _status(status::disconnected) {}
