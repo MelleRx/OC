@@ -1,4 +1,7 @@
 #include "tcpServer.h"
+#include "tcpClient.h"
+#include "tcpServer.cpp"
+#include "tcpClient.cpp"
 #include <iostream>
 
 //Парсер ip в std::string
